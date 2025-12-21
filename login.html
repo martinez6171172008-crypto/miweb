@@ -3,17 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <title>Login</title>
-  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="form">
-  <h2>Iniciar sesión</h2>
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Contraseña">
-  <button onclick="login()">Entrar</button>
-  <p>¿No tienes cuenta? <a href="register.html">Regístrate</a></p>
-</div>
+<h2>Iniciar sesión</h2>
+
+<input id="email" placeholder="Email"><br>
+<input id="password" type="password" placeholder="Contraseña"><br>
+<button onclick="login()">Entrar</button>
+
+<p><a href="register.html">Crear cuenta</a></p>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBGkUJ04p3fOGyXZUnShgfCVAkbVFw61AI",
+  authDomain: "mini-mercado-3c9e7.firebaseapp.com",
+  projectId: "mini-mercado-3c9e7",
+  storageBucket: "mini-mercado-3c9e7.appspot.com",
+  messagingSenderId: "307515400256",
+  appId: "1:307515400256:web:3da39e7a39f39f5c85ffa5"
+};
+firebase.initializeApp(firebaseConfig);
+</script>
 
 <script src="app.js"></script>
 </body>
