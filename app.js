@@ -26,3 +26,8 @@ function loadCart() {
   document.getElementById("total").innerText = total;
 }
 
+
+  document.getElementById("total").innerText = total;
+}
+
+
