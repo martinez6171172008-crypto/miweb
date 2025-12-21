@@ -8,10 +8,18 @@
 <body>
 
 <header>
-  <h1>Mini Mercado</h1>
+  <div class="logo">MiniMercado</div>
+
+  <input 
+    type="text" 
+    id="search" 
+    placeholder="Buscar productos..."
+    onkeyup="searchProducts()"
+  >
+
   <nav>
-    <a href="login.html">Ingresar</a>
     <a href="sell.html">Vender</a>
+    <a href="login.html">Ingresar</a>
   </nav>
 </header>
 
