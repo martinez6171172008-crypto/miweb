@@ -1,10 +1,25 @@
 body {
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
-  text-align: center;
-  padding: 40px;
+  font-family: Arial;
+  background: #f5f5f5;
+  padding: 20px;
 }
 
-h1 {
-  color: #333;
+header {
+  background: #ffe600;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+#catalogo {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.producto {
+  background: white;
+  padding: 15px;
+  border-radius: 5px;
 }
