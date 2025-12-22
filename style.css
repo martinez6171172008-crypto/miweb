@@ -1,139 +1,63 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-}
+/* Agrega estos estilos a tu style.css existente */
 
-body {
-  background: #f2f4f7;
-  color: #333;
-}
-
-/* HEADER */
+/* Header mejorado */
 header {
-  background: #e6f4ff;
-  padding: 14px 24px;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  position: sticky;
-  top: 0;
-  box-shadow: 0 3px 10px rgba(0,0,0,.1);
-}
-
-.logo {
-  font-size: 22px;
-  font-weight: bold;
-  color: #1f7fd6;
-}
-
-header input {
-  flex: 1;
-  padding: 12px 18px;
-  border-radius: 25px;
-  border: none;
+  z-index: 100;
 }
 
 header nav a {
-  text-decoration: none;
-  font-weight: bold;
-  color: #1f7fd6;
-  padding: 8px 14px;
-  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.3s;
 }
 
-/* CATÁLOGO */
-#catalogo {
-  padding: 30px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 25px;
+header nav a:hover {
+  background: rgba(31, 127, 214, 0.1);
 }
 
-/* PRODUCTO */
-.producto {
-  background: white;
-  padding: 18px;
-  border-radius: 22px;
-  box-shadow: 0 8px 20px rgba(0,0,0,.08);
-}
-
-.producto img {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-  border-radius: 16px;
-}
-
-.categoria {
-  background: #e6f4ff;
-  color: #1f7fd6;
-  padding: 4px 12px;
-  border-radius: 14px;
-  font-size: 12px;
-  display: inline-block;
-  margin: 6px 0;
-}
-
-.descripcion {
-  font-size: 14px;
-  color: #666;
-}
-
-.precio {
-  font-size: 18px;
-  font-weight: bold;
-  color: #1f7fd6;
-}
-
-.producto button {
-  width: 100%;
-  margin-top: 10px;
-  padding: 12px;
-  border-radius: 25px;
-  border: none;
-  background: #1f7fd6;
-  color: white;
-}
-
-/* MODALES */
+/* Modales - Asegúrate de que estos estilos estén presentes */
 .overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.45);
-  display: none;
+  z-index: 999;
 }
 
 .modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  width: 400px;
-  padding: 30px;
-  border-radius: 28px;
-  display: none;
+  z-index: 1000;
 }
 
-.modal input,
-.modal textarea {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 12px;
-  border-radius: 20px;
-  border: 1px solid #ddd;
+.modal h2 {
+  margin-bottom: 20px;
+  text-align: center;
 }
 
-.modal button {
-  width: 100%;
-  padding: 14px;
-  border-radius: 30px;
-  border: none;
-  background: #1f7fd6;
-  color: white;
+.modal p {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 14px;
 }
 
+.modal a {
+  color: #1f7fd6;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+}
 
+.modal a:hover {
+  text-decoration: underline;
+}
+
+/* Botones con hover */
+.producto button:hover,
+.modal button:hover {
+  background: #1666b3;
+  cursor: pointer;
+}
+
+/* Campos de formulario */
+.modal input:focus,
+.modal textarea:focus,
+header input:focus {
+  outline: none;
+  border-color: #1f7fd6;
+  box-shadow: 0 0 0 3px rgba(31, 127, 214, 0.1);
+}
 
