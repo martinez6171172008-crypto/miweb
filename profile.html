@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mi Perfil</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="login-box">
+  <h2>Mi Perfil</h2>
+
+  <p><strong>Email:</strong> <span id="userEmail"></span></p>
+
+  <button onclick="logout()">Cerrar sesión</button>
+</div>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<script>
+firebase.initializeApp({
+  apiKey: "AIzaSyBGkUJ04p3fOGyXZUnShgfCVAkbVFw61AI",
+  authDomain: "mini-mercado-3c9e7.firebaseapp.com"
+});
+
+firebase.auth().onAuthStateChanged(user => {
+  if (!user) location.href = "login.html";
+  else document.getElementById("userEmail").innerText = user.email;
+});
+
+function logout() {
+  firebase.auth().signOut().then(() => location.href = "login.html");
+}
+</script>
+
+</body>
+</html>
