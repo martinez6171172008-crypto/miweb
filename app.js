@@ -1,10 +1,12 @@
-/********* PRODUCTOS *********/
+document.addEventListener("DOMContentLoaded", () => {
+
+/* PRODUCTOS INICIALES */
 const defaultProducts = [
   {
     name: "Celular Samsung",
     price: 1200,
     image: "https://via.placeholder.com/300",
-    description: "Celular de gama media con excelente rendimiento",
+    description: "Celular moderno de gama media",
     category: "Tecnológico"
   },
   {
@@ -29,6 +31,7 @@ if (!localStorage.getItem("products")) {
 
 let products = JSON.parse(localStorage.getItem("products"));
 
+/* RENDER */
 function renderProducts(list) {
   const c = document.getElementById("catalogo");
   if (!c) return;
@@ -42,7 +45,7 @@ function renderProducts(list) {
         <span class="categoria">${p.category}</span>
         <p class="descripcion">${p.description}</p>
         <p class="precio">$${p.price}</p>
-        <button onclick='addToCart(${JSON.stringify(p)})'>Agregar al carrito</button>
+        <button onclick='addToCart(${JSON.stringify(p)})'>Agregar</button>
       </div>
     `;
   });
@@ -50,51 +53,32 @@ function renderProducts(list) {
 
 renderProducts(products);
 
-/********* BUSCAR *********/
-function searchProducts() {
+/* BUSCAR */
+window.searchProducts = function () {
   const t = document.getElementById("search").value.toLowerCase();
   renderProducts(products.filter(p =>
     p.name.toLowerCase().includes(t) ||
     p.category.toLowerCase().includes(t)
   ));
-}
+};
 
-/********* CARRITO *********/
-function addToCart(p) {
+/* CARRITO */
+window.addToCart = function (p) {
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
   cart.push(p);
   localStorage.setItem("cart", JSON.stringify(cart));
   alert("Producto agregado al carrito");
-}
+};
 
-function loadCart() {
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
-  const c = document.getElementById("cart");
-  let total = 0;
-
-  c.innerHTML = "";
-  cart.forEach(p => {
-    total += p.price;
-    c.innerHTML += `
-      <div class="producto">
-        <h4>${p.name}</h4>
-        <p>$${p.price}</p>
-      </div>
-    `;
-  });
-
-  document.getElementById("total").innerText = total;
-}
-
-/********* VENDER (FIXED) *********/
-function addProduct() {
+/* VENDER */
+window.addProduct = function () {
   const name = document.getElementById("name").value;
   const price = Number(document.getElementById("price").value);
   const image = document.getElementById("image").value;
-  const description = document.getElementById("description").value;
   const category = document.getElementById("category").value;
+  const description = document.getElementById("description").value;
 
-  if (!name || !price || !description || !category) {
+  if (!name || !price || !category || !description) {
     alert("Completa todos los campos");
     return;
   }
@@ -103,54 +87,64 @@ function addProduct() {
     name,
     price,
     image: image || "https://via.placeholder.com/300",
-    description,
-    category
+    category,
+    description
   });
 
   localStorage.setItem("products", JSON.stringify(products));
-  alert("Producto publicado correctamente");
-  location.href = "index.html";
-}
+  renderProducts(products);
+  closeModal();
+};
 
-/********* AUTH *********/
-function register() {
-  firebase.auth()
-    .createUserWithEmailAndPassword(regEmail.value, regPassword.value)
-    .then(() => location.href = "login.html")
-    .catch(e => alert(e.message));
-}
-
-function login() {
+/* AUTH */
+window.login = function () {
   firebase.auth()
     .signInWithEmailAndPassword(email.value, password.value)
-    .then(() => location.href = "index.html")
+    .then(closeModal)
     .catch(e => alert(e.message));
-}
-/********* MODALES *********/
+};
+
+window.register = function () {
+  firebase.auth()
+    .createUserWithEmailAndPassword(regEmail.value, regPassword.value)
+    .then(closeModal)
+    .catch(e => alert(e.message));
+};
+
+/* MODALES */
 const overlay = document.getElementById("overlay");
+const loginModal = document.getElementById("loginModal");
+const registerModal = document.getElementById("registerModal");
+const sellModal = document.getElementById("sellModal");
 
-function openLogin() {
+window.openLogin = function () {
   closeModal();
   overlay.style.display = "block";
-  document.getElementById("loginModal").style.display = "block";
-}
+  loginModal.style.display = "block";
+};
 
-function openRegister() {
+window.openRegister = function () {
   closeModal();
   overlay.style.display = "block";
-  document.getElementById("registerModal").style.display = "block";
-}
+  registerModal.style.display = "block";
+};
 
-function openSell() {
+window.openSell = function () {
   closeModal();
   overlay.style.display = "block";
-  document.getElementById("sellModal").style.display = "block";
-}
+  sellModal.style.display = "block";
+};
 
-function closeModal() {
+window.closeModal = function () {
   overlay.style.display = "none";
-  document.querySelectorAll(".modal").forEach(m => m.style.display = "none");
-}
+  loginModal.style.display = "none";
+  registerModal.style.display = "none";
+  sellModal.style.display = "none";
+};
+
+});
+
+
 
 
 
