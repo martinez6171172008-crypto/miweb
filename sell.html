@@ -7,12 +7,14 @@
 </head>
 <body>
 
-<div class="login-box">
+<div class="form">
   <h2>Publicar producto</h2>
 
   <input id="name" placeholder="Nombre del producto">
-  <input id="price" placeholder="Precio">
-  <input id="image" placeholder="URL de la imagen">
+  <input id="price" type="number" placeholder="Precio">
+  <input id="image" placeholder="URL de imagen">
+  <input id="category" placeholder="Categoría (Tecnológico, Juguete, Comida)">
+  <textarea id="description" placeholder="Descripción del producto"></textarea>
 
   <button onclick="addProduct()">Publicar</button>
 </div>
@@ -20,3 +22,4 @@
 <script src="app.js"></script>
 </body>
 </html>
+
