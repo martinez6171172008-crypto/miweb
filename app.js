@@ -126,6 +126,32 @@ function login() {
     .then(() => location.href = "index.html")
     .catch(e => alert(e.message));
 }
+/********* MODALES *********/
+const overlay = document.getElementById("overlay");
+
+function openLogin() {
+  closeModal();
+  overlay.style.display = "block";
+  document.getElementById("loginModal").style.display = "block";
+}
+
+function openRegister() {
+  closeModal();
+  overlay.style.display = "block";
+  document.getElementById("registerModal").style.display = "block";
+}
+
+function openSell() {
+  closeModal();
+  overlay.style.display = "block";
+  document.getElementById("sellModal").style.display = "block";
+}
+
+function closeModal() {
+  overlay.style.display = "none";
+  document.querySelectorAll(".modal").forEach(m => m.style.display = "none");
+}
+
 
 
 
