@@ -20,10 +20,10 @@
 
 <main id="catalogo"></main>
 
-<!-- ===== OVERLAY ===== -->
+<!-- OVERLAY -->
 <div id="overlay" class="overlay" onclick="closeModal()"></div>
 
-<!-- ===== LOGIN MODAL ===== -->
+<!-- LOGIN -->
 <div id="loginModal" class="modal">
   <h2>Iniciar sesión</h2>
   <input id="email" type="email" placeholder="Correo">
@@ -34,7 +34,7 @@
   </p>
 </div>
 
-<!-- ===== REGISTER MODAL ===== -->
+<!-- REGISTER -->
 <div id="registerModal" class="modal">
   <h2>Crear cuenta</h2>
   <input id="regEmail" type="email" placeholder="Correo">
@@ -42,13 +42,13 @@
   <button onclick="register()">Registrarse</button>
 </div>
 
-<!-- ===== SELL MODAL ===== -->
+<!-- SELL -->
 <div id="sellModal" class="modal">
   <h2>Publicar producto</h2>
   <input id="name" placeholder="Nombre del producto">
   <input id="price" type="number" placeholder="Precio">
   <input id="image" placeholder="URL de imagen">
-  <input id="category" placeholder="Categoría (Tecnológico, Juguete)">
+  <input id="category" placeholder="Categoría">
   <textarea id="description" placeholder="Descripción"></textarea>
   <button onclick="addProduct()">Publicar</button>
 </div>
@@ -56,7 +56,6 @@
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-
 <script>
 firebase.initializeApp({
   apiKey: "AIzaSyBGkUJ04p3fOGyXZUnShgfCVAkbVFw61AI",
@@ -67,7 +66,5 @@ firebase.initializeApp({
 <script src="app.js"></script>
 </body>
 </html>
-
-
 
 
