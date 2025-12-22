@@ -1,4 +1,3 @@
-/* RESET */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -11,7 +10,7 @@ body {
   color: #333;
 }
 
-/* ================= HEADER ================= */
+/* HEADER */
 header {
   background: #e6f4ff;
   padding: 14px 24px;
@@ -20,7 +19,6 @@ header {
   gap: 20px;
   position: sticky;
   top: 0;
-  z-index: 50;
   box-shadow: 0 3px 10px rgba(0,0,0,.1);
 }
 
@@ -28,7 +26,6 @@ header {
   font-size: 22px;
   font-weight: bold;
   color: #1f7fd6;
-  white-space: nowrap;
 }
 
 header input {
@@ -36,13 +33,6 @@ header input {
   padding: 12px 18px;
   border-radius: 25px;
   border: none;
-  outline: none;
-  background: white;
-}
-
-header nav {
-  display: flex;
-  gap: 12px;
 }
 
 header nav a {
@@ -51,14 +41,9 @@ header nav a {
   color: #1f7fd6;
   padding: 8px 14px;
   border-radius: 20px;
-  transition: background .2s;
 }
 
-header nav a:hover {
-  background: rgba(31,127,214,.1);
-}
-
-/* ================= CATÁLOGO ================= */
+/* CATÁLOGO */
 #catalogo {
   padding: 30px;
   display: grid;
@@ -66,20 +51,12 @@ header nav a:hover {
   gap: 25px;
 }
 
-/* ================= PRODUCTO ================= */
+/* PRODUCTO */
 .producto {
   background: white;
   padding: 18px;
   border-radius: 22px;
   box-shadow: 0 8px 20px rgba(0,0,0,.08);
-  display: flex;
-  flex-direction: column;
-  transition: transform .2s, box-shadow .2s;
-}
-
-.producto:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 28px rgba(0,0,0,.12);
 }
 
 .producto img {
@@ -87,60 +64,45 @@ header nav a:hover {
   height: 160px;
   object-fit: cover;
   border-radius: 16px;
-  margin-bottom: 10px;
-}
-
-.producto h3 {
-  font-size: 16px;
-  margin-bottom: 4px;
 }
 
 .categoria {
-  display: inline-block;
   background: #e6f4ff;
   color: #1f7fd6;
-  font-size: 12px;
   padding: 4px 12px;
   border-radius: 14px;
-  width: fit-content;
-  margin-bottom: 6px;
+  font-size: 12px;
+  display: inline-block;
+  margin: 6px 0;
 }
 
 .descripcion {
   font-size: 14px;
   color: #666;
-  margin-bottom: 8px;
-  flex-grow: 1;
 }
 
 .precio {
   font-size: 18px;
   font-weight: bold;
   color: #1f7fd6;
-  margin-bottom: 10px;
 }
 
 .producto button {
+  width: 100%;
+  margin-top: 10px;
   padding: 12px;
   border-radius: 25px;
   border: none;
   background: #1f7fd6;
   color: white;
-  font-weight: bold;
-  cursor: pointer;
 }
 
-.producto button:hover {
-  background: #1866b8;
-}
-
-/* ================= MODALES ================= */
+/* MODALES */
 .overlay {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,.45);
   display: none;
-  z-index: 90;
 }
 
 .modal {
@@ -150,33 +112,18 @@ header nav a:hover {
   transform: translate(-50%, -50%);
   background: white;
   width: 400px;
-  max-width: 92%;
   padding: 30px;
   border-radius: 28px;
-  box-shadow: 0 20px 40px rgba(0,0,0,.25);
   display: none;
-  z-index: 100;
-}
-
-.modal h2 {
-  text-align: center;
-  margin-bottom: 18px;
-  color: #1f7fd6;
 }
 
 .modal input,
 .modal textarea {
   width: 100%;
-  padding: 12px 16px;
+  padding: 12px;
   margin-bottom: 12px;
   border-radius: 20px;
   border: 1px solid #ddd;
-  outline: none;
-}
-
-.modal textarea {
-  resize: none;
-  height: 80px;
 }
 
 .modal button {
@@ -186,19 +133,7 @@ header nav a:hover {
   border: none;
   background: #1f7fd6;
   color: white;
-  font-weight: bold;
-  cursor: pointer;
 }
 
-.modal p {
-  text-align: center;
-  margin-top: 12px;
-}
-
-.modal a {
-  color: #1f7fd6;
-  font-weight: bold;
-  text-decoration: none;
-}
 
 
