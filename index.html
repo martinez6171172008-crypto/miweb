@@ -2,19 +2,17 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mini Mercado</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
 <header>
   <div class="logo">Mini Mercado</div>
-
   <input id="search" placeholder="Buscar productos..." onkeyup="searchProducts()">
-
   <nav>
-    <a href="#" onclick="openLogin()">Login</a>
-    <a href="#" onclick="openSell()">Vender</a>
+    <a href="#" onclick="openLogin(); return false;">Login</a>
+    <a href="#" onclick="openSell(); return false;">Vender</a>
   </nav>
 </header>
 
@@ -23,33 +21,36 @@
 <!-- OVERLAY -->
 <div id="overlay" class="overlay" onclick="closeModal()"></div>
 
-<!-- LOGIN -->
+<!-- LOGIN MODAL -->
 <div id="loginModal" class="modal">
   <h2>Iniciar sesión</h2>
   <input id="email" type="email" placeholder="Correo">
   <input id="password" type="password" placeholder="Contraseña">
   <button onclick="login()">Entrar</button>
   <p>¿No tienes cuenta?
-    <a href="#" onclick="openRegister()">Crear cuenta</a>
+    <a href="#" onclick="openRegister(); return false;">Crear cuenta</a>
   </p>
 </div>
 
-<!-- REGISTER -->
+<!-- REGISTER MODAL -->
 <div id="registerModal" class="modal">
   <h2>Crear cuenta</h2>
   <input id="regEmail" type="email" placeholder="Correo">
   <input id="regPassword" type="password" placeholder="Contraseña">
   <button onclick="register()">Registrarse</button>
+  <p>
+    <a href="#" onclick="openLogin(); return false;">Ya tengo cuenta</a>
+  </p>
 </div>
 
-<!-- SELL -->
+<!-- SELL MODAL -->
 <div id="sellModal" class="modal">
   <h2>Publicar producto</h2>
   <input id="name" placeholder="Nombre del producto">
   <input id="price" type="number" placeholder="Precio">
   <input id="image" placeholder="URL de imagen">
-  <input id="category" placeholder="Categoría">
-  <textarea id="description" placeholder="Descripción"></textarea>
+  <input id="category" placeholder="Categoría (Tecnológico, Juguete, Comida)">
+  <textarea id="description" placeholder="Descripción del producto"></textarea>
   <button onclick="addProduct()">Publicar</button>
 </div>
 
@@ -57,14 +58,16 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script>
-firebase.initializeApp({
+const firebaseConfig = {
   apiKey: "AIzaSyBGkUJ04p3fOGyXZUnShgfCVAkbVFw61AI",
-  authDomain: "mini-mercado-3c9e7.firebaseapp.com"
-});
+  authDomain: "mini-mercado-3c9e7.firebaseapp.com",
+  projectId: "mini-mercado-3c9e7",
+  storageBucket: "mini-mercado-3c9e7.appspot.com",
+  messagingSenderId: "307515400256",
+  appId: "1:307515400256:web:3da39e7a39f39f5c85ffa5"
+};
+firebase.initializeApp(firebaseConfig);
 </script>
-
 <script src="app.js"></script>
 </body>
 </html>
-
-
