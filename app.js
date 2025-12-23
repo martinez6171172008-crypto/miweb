@@ -1,5 +1,30 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+  const bannedWords = [
+    'estafa', 'replica', 'falso', 'robado', 'ilegal',
+    'droga', 'arma', 'hackear', 'clonar', 'piratea'
+  ];
+
+  function validateProduct(product) {
+
+    if (product.price < 1000 || product.price > 50000000) {
+      return { valid: false, reason: "Precio fuera de rango permitido (1.000 - 50.000.000 COP)" };
+    }
+
+    const text = `${product.name} ${product.description}`.toLowerCase();
+    for (let word of bannedWords) {
+      if (text.includes(word)) {
+        return { valid: false, reason: `Contenido prohibido detectado: "${word}"` };
+      }
+    }
+
+    if (product.category === "Tecnología" && product.price < 50000) {
+      return { valid: false, reason: "Precio sospechosamente bajo para productos tecnológicos" };
+    }
+    
+    return { valid: true };
+  }
+
   const defaultProducts = [
     {
       name: "Celular Samsung Galaxy",
@@ -7,7 +32,9 @@ document.addEventListener("DOMContentLoaded", () => {
       image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400",
       description: "Celular moderno de gama media con cámara de 48MP",
       category: "Tecnología",
-      seller: "tecnostore@merka.com"
+      seller: "tecnostore@merka.com",
+      status: "aprobado",
+      reports: 0
     },
     {
       name: "Laptop HP 15\"",
@@ -15,7 +42,9 @@ document.addEventListener("DOMContentLoaded", () => {
       image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400",
       description: "Ideal para estudio y trabajo, 8GB RAM",
       category: "Tecnología",
-      seller: "tecnostore@merka.com"
+      seller: "tecnostore@merka.com",
+      status: "aprobado",
+      reports: 0
     },
     {
       name: "Carro de juguete RC",
@@ -23,7 +52,9 @@ document.addEventListener("DOMContentLoaded", () => {
       image: "https://images.unsplash.com/photo-1515488764276-beab7607c1e6?w=400",
       description: "Juguete resistente para niños, control remoto",
       category: "Juguetes",
-      seller: "juguetesmx@merka.com"
+      seller: "juguetesmx@merka.com",
+      status: "aprobado",
+      reports: 0
     },
     {
       name: "Auriculares Bluetooth",
@@ -31,7 +62,9 @@ document.addEventListener("DOMContentLoaded", () => {
       image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400",
       description: "Cancelación de ruido activa, 20h de batería",
       category: "Tecnología",
-      seller: "audiozone@merka.com"
+      seller: "audiozone@merka.com",
+      status: "aprobado",
+      reports: 0
     },
     {
       name: "Camiseta Deportiva",
@@ -39,7 +72,9 @@ document.addEventListener("DOMContentLoaded", () => {
       image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400",
       description: "100% algodón premium, tallas S-XL",
       category: "Moda",
-      seller: "modacol@merka.com"
+      seller: "modacol@merka.com",
+      status: "aprobado",
+      reports: 0
     },
     {
       name: "Zapatillas Nike Running",
@@ -47,7 +82,9 @@ document.addEventListener("DOMContentLoaded", () => {
       image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400",
       description: "Perfectas para running, suela Air Max",
       category: "Deportes",
-      seller: "sportcenter@merka.com"
+      seller: "sportcenter@merka.com",
+      status: "aprobado",
+      reports: 0
     },
     {
       name: "Libro 'Cien Años de Soledad'",
@@ -55,7 +92,9 @@ document.addEventListener("DOMContentLoaded", () => {
       image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400",
       description: "Edición aniversario, tapa dura",
       category: "Libros",
-      seller: "libreriacol@merka.com"
+      seller: "libreriacol@merka.com",
+      status: "aprobado",
+      reports: 0
     },
     {
       name: "Perfume Carolina Herrera",
@@ -63,7 +102,9 @@ document.addEventListener("DOMContentLoaded", () => {
       image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400",
       description: "Good Girl, 80ml, original",
       category: "Belleza",
-      seller: "bellezatotal@merka.com"
+      seller: "bellezatotal@merka.com",
+      status: "aprobado",
+      reports: 0
     }
   ];
 
@@ -77,7 +118,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const c = document.getElementById("catalogo");
     if (!c) return;
     c.innerHTML = "";
-    list.forEach(p => {
+
+    const approvedProducts = list.filter(p => p.status === "aprobado");
+    
+    approvedProducts.forEach(p => {
       const formattedPrice = new Intl.NumberFormat('es-CO', {
         style: 'currency',
         currency: 'COP',
@@ -92,7 +136,10 @@ document.addEventListener("DOMContentLoaded", () => {
           <p class="descripcion">${p.description}</p>
           <p class="precio">${formattedPrice}</p>
           <p class="seller-info">Vendedor: ${p.seller || 'Anónimo'}</p>
-          <button onclick='addToCart(${JSON.stringify(p)})'>Agregar al Carrito</button>
+          <div class="product-actions">
+            <button onclick='addToCart(${JSON.stringify(p).replace(/'/g, "\\'")})''>Agregar al Carrito</button>
+            <button class="report-btn" onclick='reportProduct(${JSON.stringify(p).replace(/'/g, "\\'")})''>⚠️ Reportar</button>
+          </div>
         </div>
       `;
     });
@@ -108,14 +155,51 @@ document.addEventListener("DOMContentLoaded", () => {
     renderProducts(filtered);
   };
 
+  window.reportProduct = function(product) {
+    const reason = prompt("¿Por qué reportas este producto?\n\n1. Precio sospechoso\n2. Descripción engañosa\n3. Producto prohibido\n4. Estafa\n5. Otro\n\nEscribe el número:");
+    
+    if (!reason) return;
+    
+    const reasons = {
+      '1': 'Precio sospechoso',
+      '2': 'Descripción engañosa',
+      '3': 'Producto prohibido',
+      '4': 'Posible estafa',
+      '5': 'Otro'
+    };
+
+    const productIndex = products.findIndex(p => 
+      p.name === product.name && p.seller === product.seller
+    );
+    
+    if (productIndex !== -1) {
+      products[productIndex].reports = (products[productIndex].reports || 0) + 1;
+
+      if (products[productIndex].reports >= 3) {
+        products[productIndex].status = "revision";
+        alert("⚠️ Este producto ha sido marcado para revisión por múltiples reportes.");
+      } else {
+        alert("✅ Reporte enviado. Gracias por ayudar a mantener Merka seguro.");
+      }
+
+      if (products[productIndex].reports >= 5) {
+        products[productIndex].status = "bloqueado";
+        alert("🛑 Este producto ha sido bloqueado automáticamente.");
+      }
+      
+      localStorage.setItem("products", JSON.stringify(products));
+      renderProducts(products);
+    }
+  };
+
   window.filterByCategory = function(category) {
     currentCategory = category;
-    
+ 
     document.querySelectorAll('.category-btn').forEach(btn => {
       btn.classList.remove('active');
     });
     event.target.closest('.category-btn')?.classList.add('active');
-
+  
     const searchTerm = document.getElementById("search").value.toLowerCase();
     const filtered = products.filter(p => {
       const matchesCategory = category === "Todos" || p.category === category;
@@ -126,7 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     
     renderProducts(filtered);
-    
+
     document.getElementById("catalogo").scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -220,38 +304,60 @@ document.addEventListener("DOMContentLoaded", () => {
     const description = document.getElementById("description").value;
     
     if (!name || !price || !category || !description) {
-      alert("Completa todos los campos");
+      alert("❌ Completa todos los campos obligatorios");
       return;
     }
 
     const user = firebase.auth().currentUser;
     if (!user) {
-      alert("Debes iniciar sesión para publicar productos");
+      alert("❌ Debes iniciar sesión para publicar productos");
       openLogin();
       return;
     }
-    
-    products.push({
+
+    const newProduct = {
       name,
       price,
       image: image || "https://via.placeholder.com/300",
       category,
       description,
-      seller: user.email
+      seller: user.email,
+      status: "pendiente", 
+      reports: 0,
+      createdAt: Date.now()
+    };
+
+    const validation = validateProduct(newProduct);
+    
+    if (!validation.valid) {
+      alert(`❌ Producto rechazado: ${validation.reason}\n\nPor favor, revisa la información e intenta nuevamente.`);
+      return;
+    }
+
+    const userProducts = products.filter(p => p.seller === user.email);
+    const today = new Date().setHours(0,0,0,0);
+    const todayProducts = userProducts.filter(p => {
+      const productDate = new Date(p.createdAt).setHours(0,0,0,0);
+      return productDate === today;
     });
+
+    if (todayProducts.length >= 5) {
+      alert("❌ Has alcanzado el límite de 5 productos por día. Intenta mañana.");
+      return;
+    }
+    
+    products.push(newProduct);
     localStorage.setItem("products", JSON.stringify(products));
-    renderProducts(products);
-  
+    
     document.getElementById("name").value = "";
     document.getElementById("price").value = "";
     document.getElementById("image").value = "";
     document.getElementById("description").value = "";
     
-    alert("¡Producto publicado exitosamente!");
+    alert("✅ ¡Producto enviado para moderación!\n\nTu producto será revisado y publicado pronto.");
     closeModal();
   };
 
-  /* AUTH */
   window.login = function () {
     firebase.auth()
       .signInWithEmailAndPassword(email.value, password.value)
@@ -282,7 +388,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
-  // Verificar estado de autenticación
   firebase.auth().onAuthStateChanged(user => {
     if (user) {
       document.getElementById("userProfile").style.display = "inline";
@@ -291,7 +396,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* MODALES */
   const overlay = document.getElementById("overlay");
   const loginModal = document.getElementById("loginModal");
   const registerModal = document.getElementById("registerModal");
@@ -301,26 +405,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.openLogin = function () {
     closeModal();
-    overlay.style.display = "block";
-    loginModal.style.display = "block";
+    if (overlay && loginModal) {
+      overlay.style.display = "block";
+      loginModal.style.display = "block";
+    }
   };
 
   window.openRegister = function () {
     closeModal();
-    overlay.style.display = "block";
-    registerModal.style.display = "block";
+    if (overlay && registerModal) {
+      overlay.style.display = "block";
+      registerModal.style.display = "block";
+    }
   };
 
   window.openSell = function () {
     const user = firebase.auth().currentUser;
     if (!user) {
-      alert("Debes iniciar sesión para vender productos");
+      alert("❌ Debes iniciar sesión para vender productos");
       openLogin();
       return;
     }
     closeModal();
-    overlay.style.display = "block";
-    sellModal.style.display = "block";
+    if (overlay && sellModal) {
+      overlay.style.display = "block";
+      sellModal.style.display = "block";
+    }
+  };
+
+  window.openCart = function() {
+    closeModal();
+    if (overlay && cartModal) {
+      overlay.style.display = "block";
+      cartModal.style.display = "block";
+      renderCart();
+    }
   };
 
   window.openProfile = function() {
@@ -330,33 +449,44 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
     
-   
-    document.getElementById("profileEmail").textContent = user.email;
+    if (!profileModal) return;
+
+    const emailEl = document.getElementById("profileEmail");
+    const memberEl = document.getElementById("memberSince");
+    const publishedEl = document.getElementById("productsPublished");
+    const soldEl = document.getElementById("productsSold");
     
-    const creationDate = new Date(user.metadata.creationTime);
-    document.getElementById("memberSince").textContent = creationDate.toLocaleDateString('es-CO');
+    if (emailEl) emailEl.textContent = user.email;
     
-    const userProducts = products.filter(p => p.seller === user.email);
-    document.getElementById("productsPublished").textContent = userProducts.length;
-    document.getElementById("productsSold").textContent = Math.floor(userProducts.length * 0.7); 
+    if (memberEl && user.metadata.creationTime) {
+      const creationDate = new Date(user.metadata.creationTime);
+      memberEl.textContent = creationDate.toLocaleDateString('es-CO');
+    }
+
+    const userProducts = products.filter(p => p.seller === user.email && p.status === "aprobado");
+    if (publishedEl) publishedEl.textContent = userProducts.length;
+    if (soldEl) soldEl.textContent = Math.floor(userProducts.length * 0.7); // Simulado
     
     closeModal();
-    overlay.style.display = "block";
-    profileModal.style.display = "block";
+    if (overlay && profileModal) {
+      overlay.style.display = "block";
+      profileModal.style.display = "block";
+    }
   };
 
   window.closeModal = function () {
-    overlay.style.display = "none";
-    loginModal.style.display = "none";
-    registerModal.style.display = "none";
-    sellModal.style.display = "none";
-    cartModal.style.display = "none";
-    profileModal.style.display = "none";
+    if (overlay) overlay.style.display = "none";
+    if (loginModal) loginModal.style.display = "none";
+    if (registerModal) registerModal.style.display = "none";
+    if (sellModal) sellModal.style.display = "none";
+    if (cartModal) cartModal.style.display = "none";
+    if (profileModal) profileModal.style.display = "none";
   };
+
+
   let currentSlide = 0;
   const slides = document.querySelectorAll('.carousel-slide');
   const totalSlides = slides.length;
-
   const indicatorsContainer = document.getElementById('carouselIndicators');
   for (let i = 0; i < totalSlides; i++) {
     const indicator = document.createElement('button');
