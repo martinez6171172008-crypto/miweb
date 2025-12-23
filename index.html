@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mini Mercado</title>
+  <title>Merka - Marketplace Colombiano</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header>
-  <div class="logo">Mini Mercado</div>
+  <div class="logo">🛒 Merka</div>
   <input id="search" placeholder="Buscar productos..." onkeyup="searchProducts()">
   <nav>
+    <a href="#" id="userProfile" style="display:none;" onclick="openProfile(); return false;">Mi Perfil</a>
     <a href="#" onclick="openLogin(); return false;">Login</a>
     <a href="#" onclick="openCart(); return false;">🛒 Carrito (<span id="cartCount">0</span>)</a>
     <a href="#" onclick="openSell(); return false;">Vender</a>
@@ -20,7 +21,7 @@
 <!-- CARRUSEL DE DESTACADOS -->
 <div class="carousel">
   <div class="carousel-container" id="carouselContainer">
-    <div class="carousel-slide active" data-category="Tecnológico" onclick="filterByCategory('Tecnológico')">
+    <div class="carousel-slide active" data-category="Tecnología" onclick="filterByCategory('Tecnología')">
       <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=800" alt="Tecnología">
       <div class="carousel-content">
         <h2>Tecnología de Última Generación</h2>
@@ -41,7 +42,7 @@
         <button class="carousel-btn">Ver Productos</button>
       </div>
     </div>
-    <div class="carousel-slide" data-category="Juguete" onclick="filterByCategory('Juguete')">
+    <div class="carousel-slide" data-category="Juguetes" onclick="filterByCategory('Juguetes')">
       <img src="https://images.unsplash.com/photo-1515488764276-beab7607c1e6?w=800" alt="Juguetes">
       <div class="carousel-content">
         <h2>Juguetes y Diversión</h2>
@@ -62,21 +63,13 @@
       <span class="category-icon">🛍️</span>
       <span>Todos</span>
     </button>
-    <button class="category-btn" onclick="filterByCategory('Tecnológico')">
+    <button class="category-btn" onclick="filterByCategory('Tecnología')">
       <span class="category-icon">💻</span>
       <span>Tecnología</span>
     </button>
-    <button class="category-btn" onclick="filterByCategory('Ropa')">
+    <button class="category-btn" onclick="filterByCategory('Moda')">
       <span class="category-icon">👕</span>
-      <span>Ropa</span>
-    </button>
-    <button class="category-btn" onclick="filterByCategory('Comida')">
-      <span class="category-icon">🍕</span>
-      <span>Comida</span>
-    </button>
-    <button class="category-btn" onclick="filterByCategory('Juguete')">
-      <span class="category-icon">🎮</span>
-      <span>Juguetes</span>
+      <span>Moda</span>
     </button>
     <button class="category-btn" onclick="filterByCategory('Hogar')">
       <span class="category-icon">🏠</span>
@@ -85,6 +78,34 @@
     <button class="category-btn" onclick="filterByCategory('Deportes')">
       <span class="category-icon">⚽</span>
       <span>Deportes</span>
+    </button>
+    <button class="category-btn" onclick="filterByCategory('Juguetes')">
+      <span class="category-icon">🎮</span>
+      <span>Juguetes</span>
+    </button>
+    <button class="category-btn" onclick="filterByCategory('Belleza')">
+      <span class="category-icon">💄</span>
+      <span>Belleza</span>
+    </button>
+    <button class="category-btn" onclick="filterByCategory('Libros')">
+      <span class="category-icon">📚</span>
+      <span>Libros</span>
+    </button>
+    <button class="category-btn" onclick="filterByCategory('Mascotas')">
+      <span class="category-icon">🐾</span>
+      <span>Mascotas</span>
+    </button>
+    <button class="category-btn" onclick="filterByCategory('Alimentos')">
+      <span class="category-icon">🍕</span>
+      <span>Alimentos</span>
+    </button>
+    <button class="category-btn" onclick="filterByCategory('Vehículos')">
+      <span class="category-icon">🚗</span>
+      <span>Vehículos</span>
+    </button>
+    <button class="category-btn" onclick="filterByCategory('Música')">
+      <span class="category-icon">🎵</span>
+      <span>Música</span>
     </button>
   </div>
 </section>
@@ -121,15 +142,20 @@
 <div id="sellModal" class="modal">
   <h2>Publicar producto</h2>
   <input id="name" placeholder="Nombre del producto">
-  <input id="price" type="number" placeholder="Precio">
+  <input id="price" type="number" placeholder="Precio en COP (pesos colombianos)">
   <input id="image" placeholder="URL de imagen">
   <select id="category">
-    <option value="Tecnológico">Tecnológico</option>
-    <option value="Ropa">Ropa</option>
-    <option value="Comida">Comida</option>
-    <option value="Juguete">Juguete</option>
+    <option value="Tecnología">Tecnología</option>
+    <option value="Moda">Moda</option>
     <option value="Hogar">Hogar</option>
     <option value="Deportes">Deportes</option>
+    <option value="Juguetes">Juguetes</option>
+    <option value="Belleza">Belleza</option>
+    <option value="Libros">Libros</option>
+    <option value="Mascotas">Mascotas</option>
+    <option value="Alimentos">Alimentos</option>
+    <option value="Vehículos">Vehículos</option>
+    <option value="Música">Música</option>
   </select>
   <textarea id="description" placeholder="Descripción del producto"></textarea>
   <button onclick="addProduct()">Publicar</button>
@@ -140,9 +166,36 @@
   <h2>Carrito de Compras</h2>
   <div id="cartItems"></div>
   <div class="cart-total">
-    <h3>Total: $<span id="cartTotal">0</span></h3>
+    <h3>Total: $<span id="cartTotal">0</span> COP</h3>
     <button onclick="checkout()">Proceder al Pago</button>
   </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div id="profileModal" class="modal">
+  <h2>Mi Perfil</h2>
+  <div class="profile-info">
+    <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+    <p><strong>Miembro desde:</strong> <span id="memberSince"></span></p>
+    <div class="profile-stats">
+      <div class="stat-box">
+        <h3 id="productsPublished">0</h3>
+        <p>Productos Publicados</p>
+      </div>
+      <div class="stat-box">
+        <h3 id="productsSold">0</h3>
+        <p>Ventas Realizadas</p>
+      </div>
+    </div>
+    <div class="profile-rating">
+      <h3>Calificación del Vendedor</h3>
+      <div class="stars" id="sellerRating">
+        ⭐⭐⭐⭐⭐
+      </div>
+      <p class="rating-text">5.0 (12 valoraciones)</p>
+    </div>
+  </div>
+  <button onclick="logout()" class="logout-btn">Cerrar Sesión</button>
 </div>
 
 <!-- FIREBASE -->
