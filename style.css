@@ -1,63 +1,472 @@
-/* Agrega estos estilos a tu style.css existente */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-/* Header mejorado */
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+}
+
+/* HEADER */
 header {
+  background: white;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
   z-index: 100;
 }
 
-header nav a {
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2563eb;
+}
+
+#search {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+nav {
+  display: flex;
+  gap: 1rem;
+}
+
+nav a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+nav a:hover {
+  color: #2563eb;
+}
+
+/* CARRUSEL */
+.carousel {
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+  background: #000;
+}
+
+.carousel-container {
+  height: 100%;
+  position: relative;
+}
+
+.carousel-slide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.7s ease-in-out;
+  cursor: pointer;
+}
+
+.carousel-slide.active {
+  opacity: 1;
+}
+
+.carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.6);
+}
+
+.carousel-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  z-index: 10;
+}
+
+.carousel-content h2 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.carousel-btn {
+  padding: 1rem 2rem;
+  background: white;
+  color: #333;
+  border: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.carousel-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.carousel-prev,
+.carousel-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.8);
+  border: none;
+  padding: 1rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 20;
+  transition: background 0.3s;
+  border-radius: 5px;
+}
+
+.carousel-prev:hover,
+.carousel-next:hover {
+  background: white;
+}
+
+.carousel-prev {
+  left: 1rem;
+}
+
+.carousel-next {
+  right: 1rem;
+}
+
+.carousel-indicators {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5rem;
+  z-index: 20;
+}
+
+.indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  border: none;
   cursor: pointer;
   transition: background 0.3s;
 }
 
-header nav a:hover {
-  background: rgba(31, 127, 214, 0.1);
+.indicator.active {
+  background: white;
 }
 
-/* Modales - Asegúrate de que estos estilos estén presentes */
+/* CATEGORÍAS */
+.categories-section {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.categories-section h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.categories {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+}
+
+.category-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  min-width: 100px;
+  background: white;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.category-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.category-btn.active {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+
+.category-icon {
+  font-size: 2rem;
+}
+
+.category-btn span:last-child {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+/* CATÁLOGO */
+#catalogo {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.producto {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: all 0.3s;
+}
+
+.producto:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.producto img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.producto h3 {
+  padding: 1rem 1rem 0.5rem;
+  font-size: 1.1rem;
+}
+
+.categoria {
+  display: inline-block;
+  margin: 0 1rem;
+  padding: 0.25rem 0.75rem;
+  background: #e5e7eb;
+  border-radius: 15px;
+  font-size: 0.75rem;
+  color: #555;
+}
+
+.descripcion {
+  padding: 0.5rem 1rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.precio {
+  padding: 0.5rem 1rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2563eb;
+}
+
+.producto button {
+  width: calc(100% - 2rem);
+  margin: 0 1rem 1rem;
+  padding: 0.75rem;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.producto button:hover {
+  background: #1d4ed8;
+}
+
+/* MODALES */
 .overlay {
-  z-index: 999;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 200;
 }
 
 .modal {
-  z-index: 1000;
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  z-index: 201;
+  min-width: 350px;
+  max-width: 90%;
 }
 
 .modal h2 {
-  margin-bottom: 20px;
-  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.modal input,
+.modal select,
+.modal textarea {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.modal textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.modal button {
+  width: 100%;
+  padding: 0.75rem;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.modal button:hover {
+  background: #1d4ed8;
 }
 
 .modal p {
+  margin-top: 1rem;
   text-align: center;
-  margin-top: 15px;
-  font-size: 14px;
+  font-size: 0.9rem;
 }
 
 .modal a {
-  color: #1f7fd6;
+  color: #2563eb;
   text-decoration: none;
-  font-weight: bold;
-  cursor: pointer;
 }
 
 .modal a:hover {
   text-decoration: underline;
 }
 
-/* Botones con hover */
-.producto button:hover,
-.modal button:hover {
-  background: #1666b3;
+/* CARRITO MODAL */
+.cart-modal {
+  min-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+#cartItems {
+  margin-bottom: 1rem;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.cart-item img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.cart-item-info {
+  flex: 1;
+}
+
+.cart-item-info h4 {
+  margin-bottom: 0.5rem;
+}
+
+.remove-btn {
+  background: #ef4444 !important;
+  color: white;
+  border: none;
+  width: 30px !important;
+  height: 30px;
+  border-radius: 50%;
   cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
-/* Campos de formulario */
-.modal input:focus,
-.modal textarea:focus,
-header input:focus {
-  outline: none;
-  border-color: #1f7fd6;
-  box-shadow: 0 0 0 3px rgba(31, 127, 214, 0.1);
+.remove-btn:hover {
+  background: #dc2626 !important;
 }
 
+.cart-total {
+  padding-top: 1rem;
+  border-top: 2px solid #ddd;
+}
+
+.cart-total h3 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: #2563eb;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  header {
+    flex-wrap: wrap;
+    padding: 1rem;
+  }
+  
+  #search {
+    order: 3;
+    width: 100%;
+  }
+  
+  .carousel {
+    height: 300px;
+  }
+  
+  .carousel-content h2 {
+    font-size: 2rem;
+  }
+  
+  .categories {
+    justify-content: flex-start;
+  }
+  
+  .cart-modal {
+    min-width: 90%;
+  }
+}
