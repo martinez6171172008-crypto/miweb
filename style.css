@@ -1,7 +1,3 @@
-/* ========================================
-   MINI MERCADO - STYLE.CSS
-   Diseño moderno inspirado en React
-   ======================================== */
 
 * {
   margin: 0;
@@ -16,9 +12,7 @@ body {
   line-height: 1.6;
 }
 
-/* ========================================
-   HEADER
-   ======================================== */
+
 header {
   background: white;
   padding: 1rem 2rem;
@@ -86,10 +80,6 @@ nav a:hover {
   font-size: 0.75rem;
   font-weight: 600;
 }
-
-/* ========================================
-   CARRUSEL
-   ======================================== */
 .carousel {
   position: relative;
   height: 400px;
@@ -224,9 +214,6 @@ nav a:hover {
   background: white;
 }
 
-/* ========================================
-   CATEGORÍAS
-   ======================================== */
 .categories-section {
   max-width: 1280px;
   margin: 2rem auto;
@@ -286,9 +273,6 @@ nav a:hover {
   white-space: nowrap;
 }
 
-/* ========================================
-   CATÁLOGO
-   ======================================== */
 #catalogo {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -367,9 +351,6 @@ nav a:hover {
   background: #1d4ed8;
 }
 
-/* ========================================
-   MODALES
-   ======================================== */
 .overlay {
   display: none;
   position: fixed;
@@ -463,9 +444,6 @@ nav a:hover {
   text-decoration: underline;
 }
 
-/* ========================================
-   CARRITO MODAL
-   ======================================== */
 .cart-modal {
   min-width: 500px;
 }
@@ -544,9 +522,90 @@ nav a:hover {
   font-weight: 700;
 }
 
-/* ========================================
-   RESPONSIVE
-   ======================================== */
+.profile-info {
+  margin-bottom: 1.5rem;
+}
+
+.profile-info p {
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.profile-info strong {
+  color: #111827;
+}
+
+.profile-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.stat-box {
+  background: #f9fafb;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+}
+
+.stat-box h3 {
+  font-size: 2rem;
+  color: #2563eb;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.stat-box p {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.profile-rating {
+  background: #fffbeb;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  border: 1px solid #fcd34d;
+  margin: 1.5rem 0;
+}
+
+.profile-rating h3 {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: #111827;
+}
+
+.stars {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.rating-text {
+  font-size: 0.875rem;
+  color: #92400e;
+  margin: 0;
+}
+
+.logout-btn {
+  background: #ef4444 !important;
+  margin-top: 1rem;
+}
+
+.logout-btn:hover {
+  background: #dc2626 !important;
+}
+
+.seller-info {
+  padding: 0 1rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
 @media (max-width: 768px) {
   header {
     flex-wrap: wrap;
