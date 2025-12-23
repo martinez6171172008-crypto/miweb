@@ -12,10 +12,84 @@
   <input id="search" placeholder="Buscar productos..." onkeyup="searchProducts()">
   <nav>
     <a href="#" onclick="openLogin(); return false;">Login</a>
+    <a href="#" onclick="openCart(); return false;">🛒 Carrito (<span id="cartCount">0</span>)</a>
     <a href="#" onclick="openSell(); return false;">Vender</a>
   </nav>
 </header>
 
+<!-- CARRUSEL DE DESTACADOS -->
+<div class="carousel">
+  <div class="carousel-container" id="carouselContainer">
+    <div class="carousel-slide active" data-category="Tecnológico" onclick="filterByCategory('Tecnológico')">
+      <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=800" alt="Tecnología">
+      <div class="carousel-content">
+        <h2>Tecnología de Última Generación</h2>
+        <button class="carousel-btn">Ver Productos</button>
+      </div>
+    </div>
+    <div class="carousel-slide" data-category="Ropa" onclick="filterByCategory('Ropa')">
+      <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=800" alt="Moda">
+      <div class="carousel-content">
+        <h2>Moda y Estilo</h2>
+        <button class="carousel-btn">Ver Productos</button>
+      </div>
+    </div>
+    <div class="carousel-slide" data-category="Comida" onclick="filterByCategory('Comida')">
+      <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800" alt="Comida">
+      <div class="carousel-content">
+        <h2>Deliciosa Comida</h2>
+        <button class="carousel-btn">Ver Productos</button>
+      </div>
+    </div>
+    <div class="carousel-slide" data-category="Juguete" onclick="filterByCategory('Juguete')">
+      <img src="https://images.unsplash.com/photo-1515488764276-beab7607c1e6?w=800" alt="Juguetes">
+      <div class="carousel-content">
+        <h2>Juguetes y Diversión</h2>
+        <button class="carousel-btn">Ver Productos</button>
+      </div>
+    </div>
+  </div>
+  <button class="carousel-prev" onclick="prevSlide()">&#10094;</button>
+  <button class="carousel-next" onclick="nextSlide()">&#10095;</button>
+  <div class="carousel-indicators" id="carouselIndicators"></div>
+</div>
+
+<!-- CATEGORÍAS -->
+<section class="categories-section">
+  <h2>Categorías</h2>
+  <div class="categories">
+    <button class="category-btn active" onclick="filterByCategory('Todos')">
+      <span class="category-icon">🛍️</span>
+      <span>Todos</span>
+    </button>
+    <button class="category-btn" onclick="filterByCategory('Tecnológico')">
+      <span class="category-icon">💻</span>
+      <span>Tecnología</span>
+    </button>
+    <button class="category-btn" onclick="filterByCategory('Ropa')">
+      <span class="category-icon">👕</span>
+      <span>Ropa</span>
+    </button>
+    <button class="category-btn" onclick="filterByCategory('Comida')">
+      <span class="category-icon">🍕</span>
+      <span>Comida</span>
+    </button>
+    <button class="category-btn" onclick="filterByCategory('Juguete')">
+      <span class="category-icon">🎮</span>
+      <span>Juguetes</span>
+    </button>
+    <button class="category-btn" onclick="filterByCategory('Hogar')">
+      <span class="category-icon">🏠</span>
+      <span>Hogar</span>
+    </button>
+    <button class="category-btn" onclick="filterByCategory('Deportes')">
+      <span class="category-icon">⚽</span>
+      <span>Deportes</span>
+    </button>
+  </div>
+</section>
+
+<!-- CATÁLOGO -->
 <main id="catalogo"></main>
 
 <!-- OVERLAY -->
@@ -49,9 +123,26 @@
   <input id="name" placeholder="Nombre del producto">
   <input id="price" type="number" placeholder="Precio">
   <input id="image" placeholder="URL de imagen">
-  <input id="category" placeholder="Categoría (Tecnológico, Juguete, Comida)">
+  <select id="category">
+    <option value="Tecnológico">Tecnológico</option>
+    <option value="Ropa">Ropa</option>
+    <option value="Comida">Comida</option>
+    <option value="Juguete">Juguete</option>
+    <option value="Hogar">Hogar</option>
+    <option value="Deportes">Deportes</option>
+  </select>
   <textarea id="description" placeholder="Descripción del producto"></textarea>
   <button onclick="addProduct()">Publicar</button>
+</div>
+
+<!-- CART MODAL -->
+<div id="cartModal" class="modal cart-modal">
+  <h2>Carrito de Compras</h2>
+  <div id="cartItems"></div>
+  <div class="cart-total">
+    <h3>Total: $<span id="cartTotal">0</span></h3>
+    <button onclick="checkout()">Proceder al Pago</button>
+  </div>
 </div>
 
 <!-- FIREBASE -->
