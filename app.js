@@ -1,66 +1,69 @@
-// ========================================
-// MINI MERCADO - APP.JS
-// Todas las funcionalidades del sitio
-// ========================================
-
 document.addEventListener("DOMContentLoaded", () => {
-  /* PRODUCTOS INICIALES */
+
   const defaultProducts = [
     {
-      name: "Celular Samsung",
-      price: 1200,
+      name: "Celular Samsung Galaxy",
+      price: 1200000,
       image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400",
-      description: "Celular moderno de gama media",
-      category: "Tecnológico"
+      description: "Celular moderno de gama media con cámara de 48MP",
+      category: "Tecnología",
+      seller: "tecnostore@merka.com"
     },
     {
-      name: "Laptop HP",
-      price: 3500,
+      name: "Laptop HP 15\"",
+      price: 3500000,
       image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400",
-      description: "Ideal para estudio y trabajo",
-      category: "Tecnológico"
+      description: "Ideal para estudio y trabajo, 8GB RAM",
+      category: "Tecnología",
+      seller: "tecnostore@merka.com"
     },
     {
-      name: "Carro de juguete",
-      price: 80,
+      name: "Carro de juguete RC",
+      price: 80000,
       image: "https://images.unsplash.com/photo-1515488764276-beab7607c1e6?w=400",
-      description: "Juguete resistente para niños",
-      category: "Juguete"
+      description: "Juguete resistente para niños, control remoto",
+      category: "Juguetes",
+      seller: "juguetesmx@merka.com"
     },
     {
       name: "Auriculares Bluetooth",
-      price: 150,
+      price: 150000,
       image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400",
-      description: "Cancelación de ruido activa",
-      category: "Tecnológico"
+      description: "Cancelación de ruido activa, 20h de batería",
+      category: "Tecnología",
+      seller: "audiozone@merka.com"
     },
     {
-      name: "Camiseta Premium",
-      price: 45,
+      name: "Camiseta Deportiva",
+      price: 45000,
       image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400",
-      description: "100% algodón premium",
-      category: "Ropa"
+      description: "100% algodón premium, tallas S-XL",
+      category: "Moda",
+      seller: "modacol@merka.com"
     },
     {
-      name: "Zapatillas Deportivas",
-      price: 89,
+      name: "Zapatillas Nike Running",
+      price: 289000,
       image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400",
-      description: "Perfectas para running",
-      category: "Ropa"
+      description: "Perfectas para running, suela Air Max",
+      category: "Deportes",
+      seller: "sportcenter@merka.com"
     },
     {
-      name: "Pizza Artesanal",
-      price: 18,
-      image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400",
-      description: "Masa artesanal con ingredientes frescos",
-      category: "Comida"
+      name: "Libro 'Cien Años de Soledad'",
+      price: 45000,
+      image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400",
+      description: "Edición aniversario, tapa dura",
+      category: "Libros",
+      seller: "libreriacol@merka.com"
     },
     {
-      name: "Hamburguesa Gourmet",
-      price: 15,
-      image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400",
-      description: "Carne 100% premium",
-      category: "Comida"
+      name: "Perfume Carolina Herrera",
+      price: 320000,
+      image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400",
+      description: "Good Girl, 80ml, original",
+      category: "Belleza",
+      seller: "bellezatotal@merka.com"
     }
   ];
 
@@ -70,19 +73,25 @@ document.addEventListener("DOMContentLoaded", () => {
   let products = JSON.parse(localStorage.getItem("products"));
   let currentCategory = "Todos";
 
-  /* RENDER */
   function renderProducts(list) {
     const c = document.getElementById("catalogo");
     if (!c) return;
     c.innerHTML = "";
     list.forEach(p => {
+      const formattedPrice = new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        minimumFractionDigits: 0
+      }).format(p.price);
+      
       c.innerHTML += `
         <div class="producto">
           <img src="${p.image}">
           <h3>${p.name}</h3>
           <span class="categoria">${p.category}</span>
           <p class="descripcion">${p.description}</p>
-          <p class="precio">$${p.price}</p>
+          <p class="precio">${formattedPrice}</p>
+          <p class="seller-info">Vendedor: ${p.seller || 'Anónimo'}</p>
           <button onclick='addToCart(${JSON.stringify(p)})'>Agregar al Carrito</button>
         </div>
       `;
@@ -90,7 +99,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   renderProducts(products);
 
-  /* BÚSQUEDA MEJORADA */
   window.searchProducts = function () {
     const t = document.getElementById("search").value.toLowerCase();
     const filtered = products.filter(p =>
@@ -100,17 +108,14 @@ document.addEventListener("DOMContentLoaded", () => {
     renderProducts(filtered);
   };
 
-  /* FILTRAR POR CATEGORÍA */
   window.filterByCategory = function(category) {
     currentCategory = category;
     
-    // Actualizar botones activos
     document.querySelectorAll('.category-btn').forEach(btn => {
       btn.classList.remove('active');
     });
     event.target.closest('.category-btn')?.classList.add('active');
-    
-    // Filtrar productos
+
     const searchTerm = document.getElementById("search").value.toLowerCase();
     const filtered = products.filter(p => {
       const matchesCategory = category === "Todos" || p.category === category;
@@ -122,11 +127,9 @@ document.addEventListener("DOMContentLoaded", () => {
     
     renderProducts(filtered);
     
-    // Scroll al catálogo
     document.getElementById("catalogo").scrollIntoView({ behavior: 'smooth' });
   };
 
-  /* CARRITO */
   function updateCartCount() {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
     document.getElementById("cartCount").textContent = cart.length;
@@ -172,19 +175,29 @@ document.addEventListener("DOMContentLoaded", () => {
     
     cart.forEach((item, index) => {
       total += item.price;
+      const formattedPrice = new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        minimumFractionDigits: 0
+      }).format(item.price);
+      
       cartItems.innerHTML += `
         <div class="cart-item">
           <img src="${item.image}" alt="${item.name}">
           <div class="cart-item-info">
             <h4>${item.name}</h4>
-            <p class="precio">$${item.price}</p>
+            <p class="precio">${formattedPrice}</p>
           </div>
           <button class="remove-btn" onclick="removeFromCart(${index})">✕</button>
         </div>
       `;
     });
     
-    cartTotal.textContent = total;
+    const formattedTotal = new Intl.NumberFormat('es-CO', {
+      minimumFractionDigits: 0
+    }).format(total);
+    
+    cartTotal.textContent = formattedTotal;
   }
 
   window.checkout = function() {
@@ -199,7 +212,6 @@ document.addEventListener("DOMContentLoaded", () => {
     closeModal();
   };
 
-  /* VENDER */
   window.addProduct = function () {
     const name = document.getElementById("name").value;
     const price = Number(document.getElementById("price").value);
@@ -211,18 +223,25 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Completa todos los campos");
       return;
     }
+
+    const user = firebase.auth().currentUser;
+    if (!user) {
+      alert("Debes iniciar sesión para publicar productos");
+      openLogin();
+      return;
+    }
     
     products.push({
       name,
       price,
       image: image || "https://via.placeholder.com/300",
       category,
-      description
+      description,
+      seller: user.email
     });
     localStorage.setItem("products", JSON.stringify(products));
     renderProducts(products);
-    
-    // Limpiar formulario
+  
     document.getElementById("name").value = "";
     document.getElementById("price").value = "";
     document.getElementById("image").value = "";
@@ -238,6 +257,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .signInWithEmailAndPassword(email.value, password.value)
       .then(() => {
         alert("¡Inicio de sesión exitoso!");
+        document.getElementById("userProfile").style.display = "inline";
         closeModal();
       })
       .catch(e => alert(e.message));
@@ -248,10 +268,28 @@ document.addEventListener("DOMContentLoaded", () => {
       .createUserWithEmailAndPassword(regEmail.value, regPassword.value)
       .then(() => {
         alert("¡Cuenta creada exitosamente!");
+        document.getElementById("userProfile").style.display = "inline";
         closeModal();
       })
       .catch(e => alert(e.message));
   };
+
+  window.logout = function() {
+    firebase.auth().signOut().then(() => {
+      document.getElementById("userProfile").style.display = "none";
+      alert("Sesión cerrada");
+      closeModal();
+    });
+  };
+
+  // Verificar estado de autenticación
+  firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+      document.getElementById("userProfile").style.display = "inline";
+    } else {
+      document.getElementById("userProfile").style.display = "none";
+    }
+  });
 
   /* MODALES */
   const overlay = document.getElementById("overlay");
@@ -259,6 +297,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const registerModal = document.getElementById("registerModal");
   const sellModal = document.getElementById("sellModal");
   const cartModal = document.getElementById("cartModal");
+  const profileModal = document.getElementById("profileModal");
 
   window.openLogin = function () {
     closeModal();
@@ -273,9 +312,37 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   window.openSell = function () {
+    const user = firebase.auth().currentUser;
+    if (!user) {
+      alert("Debes iniciar sesión para vender productos");
+      openLogin();
+      return;
+    }
     closeModal();
     overlay.style.display = "block";
     sellModal.style.display = "block";
+  };
+
+  window.openProfile = function() {
+    const user = firebase.auth().currentUser;
+    if (!user) {
+      openLogin();
+      return;
+    }
+    
+   
+    document.getElementById("profileEmail").textContent = user.email;
+    
+    const creationDate = new Date(user.metadata.creationTime);
+    document.getElementById("memberSince").textContent = creationDate.toLocaleDateString('es-CO');
+    
+    const userProducts = products.filter(p => p.seller === user.email);
+    document.getElementById("productsPublished").textContent = userProducts.length;
+    document.getElementById("productsSold").textContent = Math.floor(userProducts.length * 0.7); 
+    
+    closeModal();
+    overlay.style.display = "block";
+    profileModal.style.display = "block";
   };
 
   window.closeModal = function () {
@@ -284,14 +351,12 @@ document.addEventListener("DOMContentLoaded", () => {
     registerModal.style.display = "none";
     sellModal.style.display = "none";
     cartModal.style.display = "none";
+    profileModal.style.display = "none";
   };
-
-  /* CARRUSEL */
   let currentSlide = 0;
   const slides = document.querySelectorAll('.carousel-slide');
   const totalSlides = slides.length;
 
-  // Crear indicadores
   const indicatorsContainer = document.getElementById('carouselIndicators');
   for (let i = 0; i < totalSlides; i++) {
     const indicator = document.createElement('button');
@@ -322,9 +387,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showSlide(n);
   }
 
-  // Auto-avance del carrusel
   setInterval(() => {
     nextSlide();
   }, 5000);
 });
-
