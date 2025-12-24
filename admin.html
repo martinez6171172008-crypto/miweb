@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración - Merka</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f9fafb;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #111827;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .stat-card h3 {
+      font-size: 2rem;
+      color: #2563eb;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-card p {
+      color: #6b7280;
+      font-size: 0.875rem;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    .tab {
+      padding: 1rem 1.5rem;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      font-weight: 600;
+      color: #6b7280;
+      transition: all 0.2s;
+    }
+
+    .tab.active {
+      color: #2563eb;
+      border-bottom-color: #2563eb;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      display: grid;
+      grid-template-columns: 150px 1fr auto;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .product-card img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 0.5rem;
+    }
+
+    .product-info h3 {
+      margin-bottom: 0.5rem;
+      color: #111827;
+    }
+
+    .product-info p {
+      color: #6b7280;
+      font-size: 0.875rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .price {
+      color: #2563eb;
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+
+    .seller {
+      color: #059669;
+      font-weight: 600;
+    }
+
+    .reports {
+      color: #ef4444;
+      font-weight: 600;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .btn {
+      padding: 0.625rem 1.25rem;
+      border: none;
+      border-radius: 0.375rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.875rem;
+    }
+
+    .btn-approve {
+      background: #10b981;
+      color: white;
+    }
+
+    .btn-approve:hover {
+      background: #059669;
+    }
+
+    .btn-reject {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-reject:hover {
+      background: #dc2626;
+    }
+
+    .btn-view {
+      background: #6b7280;
+      color: white;
+    }
+
+    .btn-view:hover {
+      background: #4b5563;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 3rem;
+      color: #6b7280;
+    }
+
+    .alert {
+      background: #fef3c7;
+      border: 1px solid #fcd34d;
+      color: #92400e;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🛡️ Panel de Administración - Merka</h1>
+
+    <div class="stats">
+      <div class="stat-card">
+        <h3 id="totalProducts">0</h3>
+        <p>Total de Productos</p>
+      </div>
+      <div class="stat-card">
+        <h3 id="pendingCount">0</h3>
+        <p>Pendientes de Revisión</p>
+      </div>
+      <div class="stat-card">
+        <h3 id="reportedCount">0</h3>
+        <p>Productos Reportados</p>
+      </div>
+      <div class="stat-card">
+        <h3 id="blockedCount">0</h3>
+        <p>Productos Bloqueados</p>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('pending')">Pendientes</button>
+      <button class="tab" onclick="showTab('reported')">Reportados</button>
+      <button class="tab" onclick="showTab('blocked')">Bloqueados</button>
+      <button class="tab" onclick="showTab('approved')">Aprobados</button>
+    </div>
+
+    <div id="pending" class="tab-content"></div>
+    <div id="reported" class="tab-content" style="display:none;"></div>
+    <div id="blocked" class="tab-content" style="display:none;"></div>
+    <div id="approved" class="tab-content" style="display:none;"></div>
+  </div>
+
+  <script>
+    let products = JSON.parse(localStorage.getItem("products")) || [];
+    let currentTab = 'pending';
+
+    function updateStats() {
+      const pending = products.filter(p => p.status === "pendiente").length;
+      const reported = products.filter(p => p.reports >= 3).length;
+      const blocked = products.filter(p => p.status === "bloqueado").length;
+      
+      document.getElementById("totalProducts").textContent = products.length;
+      document.getElementById("pendingCount").textContent = pending;
+      document.getElementById("reportedCount").textContent = reported;
+      document.getElementById("blockedCount").textContent = blocked;
+    }
+
+    function formatPrice(price) {
+      return new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        minimumFractionDigits: 0
+      }).format(price);
+    }
+
+    function renderProducts(filter) {
+      let filteredProducts = [];
+      
+      switch(filter) {
+        case 'pending':
+          filteredProducts = products.filter(p => p.status === "pendiente");
+          break;
+        case 'reported':
+          filteredProducts = products.filter(p => p.reports >= 3 && p.status !== "bloqueado");
+          break;
+        case 'blocked':
+          filteredProducts = products.filter(p => p.status === "bloqueado");
+          break;
+        case 'approved':
+          filteredProducts = products.filter(p => p.status === "aprobado");
+          break;
+      }
+
+      const container = document.getElementById(filter);
+      container.innerHTML = "";
+
+      if (filteredProducts.length === 0) {
+        container.innerHTML = '<div class="empty">No hay productos en esta categoría</div>';
+        return;
+      }
+
+      filteredProducts.forEach((product, index) => {
+        const realIndex = products.findIndex(p => 
+          p.name === product.name && p.seller === product.seller && p.createdAt === product.createdAt
+        );
+
+        const reportsWarning = product.reports >= 3 ? 
+          `<div class="alert">⚠️ Este producto tiene ${product.reports} reportes</div>` : '';
+
+        container.innerHTML += `
+          <div class="product-card">
+            <img src="${product.image}" alt="${product.name}">
+            <div class="product-info">
+              ${reportsWarning}
+              <h3>${product.name}</h3>
+              <p class="price">${formatPrice(product.price)}</p>
+              <p><strong>Categoría:</strong> ${product.category}</p>
+              <p><strong>Descripción:</strong> ${product.description}</p>
+              <p class="seller">👤 Vendedor: ${product.seller}</p>
+              ${product.reports > 0 ? `<p class="reports">⚠️ Reportes: ${product.reports}</p>` : ''}
+              <p style="font-size: 0.75rem; color: #9ca3af;">Publicado: ${new Date(product.createdAt).toLocaleString('es-CO')}</p>
+            </div>
+            <div class="actions">
+              ${product.status === 'pendiente' || product.status === 'revision' ? `
+                <button class="btn btn-approve" onclick="approveProduct(${realIndex})">✅ Aprobar</button>
+                <button class="btn btn-reject" onclick="rejectProduct(${realIndex})">❌ Rechazar</button>
+              ` : ''}
+              ${product.status === 'bloqueado' ? `
+                <button class="btn btn-approve" onclick="unblockProduct(${realIndex})">🔓 Desbloquear</button>
+              ` : ''}
+              ${product.status === 'aprobado' ? `
+                <button class="btn btn-reject" onclick="blockProduct(${realIndex})">🛑 Bloquear</button>
+              ` : ''}
+              <button class="btn btn-view" onclick="viewDetails(${realIndex})">👁️ Ver Detalles</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function approveProduct(index) {
+      if (confirm("¿Aprobar este producto?")) {
+        products[index].status = "aprobado";
+        localStorage.setItem("products", JSON.stringify(products));
+        updateStats();
+        renderProducts(currentTab);
+      }
+    }
+
+    function rejectProduct(index) {
+      const reason = prompt("Razón del rechazo (opcional):");
+      if (confirm("¿Rechazar y eliminar este producto?")) {
+        products.splice(index, 1);
+        localStorage.setItem("products", JSON.stringify(products));
+        updateStats();
+        renderProducts(currentTab);
+      }
+    }
+
+    function blockProduct(index) {
+      if (confirm("¿Bloquear este producto?")) {
+        products[index].status = "bloqueado";
+        localStorage.setItem("products", JSON.stringify(products));
+        updateStats();
+        renderProducts(currentTab);
+      }
+    }
+
+    function unblockProduct(index) {
+      if (confirm("¿Desbloquear este producto?")) {
+        products[index].status = "aprobado";
+        products[index].reports = 0;
+        localStorage.setItem("products", JSON.stringify(products));
+        updateStats();
+        renderProducts(currentTab);
+      }
+    }
+
+    function viewDetails(index) {
+      const product = products[index];
+      alert(`Detalles del Producto:
+      
+Nombre: ${product.name}
+Precio: ${formatPrice(product.price)}
+Categoría: ${product.category}
+Vendedor: ${product.seller}
+Estado: ${product.status}
+Reportes: ${product.reports || 0}
+Descripción: ${product.description}
+Fecha de creación: ${new Date(product.createdAt).toLocaleString('es-CO')}`);
+    }
+
+    function showTab(tab) {
+      // Ocultar todas las tabs
+      document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      
+      // Mostrar tab seleccionada
+      document.getElementById(tab).style.display = 'block';
+      event.target.classList.add('active');
+      
+      currentTab = tab;
+      renderProducts(tab);
+    }
+
+    // Inicializar
+    updateStats();
+    renderProducts('pending');
+
+    // Actualizar cada 30 segundos
+    setInterval(() => {
+      products = JSON.parse(localStorage.getItem("products")) || [];
+      updateStats();
+      renderProducts(currentTab);
+    }, 30000);
+  </script>
+</body>
+</html>
