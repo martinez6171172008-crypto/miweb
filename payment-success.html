@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pago Exitoso - Merka</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .success-container {
+      background: white;
+      border-radius: 1rem;
+      padding: 3rem;
+      max-width: 600px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      animation: slideUp 0.5s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .success-icon {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2rem;
+      animation: scaleIn 0.5s ease-out 0.2s backwards;
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0);
+      }
+      to {
+        transform: scale(1);
+      }
+    }
+
+    .success-icon svg {
+      width: 60px;
+      height: 60px;
+      stroke: white;
+      stroke-width: 3;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    h1 {
+      color: #111827;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .order-number {
+      background: #f3f4f6;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin: 1.5rem 0;
+      font-family: monospace;
+      font-size: 1.1rem;
+      color: #6d28d9;
+      font-weight: bold;
+    }
+
+    .message {
+      color: #6b7280;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    .info-box {
+      background: #eff6ff;
+      border: 2px solid #93c5fd;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin: 1.5rem 0;
+      text-align: left;
+    }
+
+    .info-box h3 {
+      color: #1e40af;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .info-box p {
+      color: #1e3a8a;
+      font-size: 0.9rem;
+      margin: 0.25rem 0;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 1rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(109, 40, 217, 0.4);
+    }
+
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .btn-secondary:hover {
+      background: #e5e7eb;
+    }
+
+    .loading {
+      display: none;
+      margin: 2rem 0;
+    }
+
+    .spinner {
+      border: 3px solid #f3f4f6;
+      border-top: 3px solid #6d28d9;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="success-container">
+    <div class="success-icon">
+      <svg viewBox="0 0 52 52">
+        <path d="M14 27l9 9 18-18"/>
+      </svg>
+    </div>
+
+    <h1>¡Pago Exitoso!</h1>
+    
+    <div class="order-number">
+      Orden: <span id="orderNumber">Cargando...</span>
+    </div>
+
+    <p class="message">
+      Tu pago ha sido procesado correctamente. Recibirás un correo electrónico con todos los detalles de tu compra y la información de seguimiento del envío.
+    </p>
+
+    <div class="info-box">
+      <h3>📦 ¿Qué sigue?</h3>
+      <p>✓ El vendedor ha sido notificado de tu compra</p>
+      <p>✓ Preparará el envío en las próximas 24-48 horas</p>
+      <p>✓ Recibirás el número de guía por correo</p>
+      <p>✓ Puedes rastrear tu pedido desde tu perfil</p>
+    </div>
+
+    <div class="loading">
+      <div class="spinner"></div>
+      <p style="margin-top: 1rem; color: #6b7280;">Procesando tu orden...</p>
+    </div>
+
+    <div class="buttons">
+      <a href="index.html" class="btn btn-primary">Volver al Inicio</a>
+      <a href="#" onclick="viewOrder(); return false;" class="btn btn-secondary">Ver Mi Orden</a>
+    </div>
+  </div>
+
+  <script>
+    // Obtener parámetros de la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const transactionId = urlParams.get('id');
+    
+    // Mostrar número de orden
+    const pendingOrder = JSON.parse(localStorage.getItem('pendingOrder') || '{}');
+    if (pendingOrder.reference) {
+      document.getElementById('orderNumber').textContent = pendingOrder.reference;
+    } else {
+      document.getElementById('orderNumber').textContent = transactionId || 'MERKA-' + Date.now();
+    }
+
+    function viewOrder() {
+      // Redirigir a perfil o página de órdenes
+      alert('Esta funcionalidad se implementará con Firestore.\n\nPor ahora, verifica tu correo para los detalles de la orden.');
+      window.location.href = 'index.html';
+    }
+
+    // Limpiar datos después de 5 segundos
+    setTimeout(() => {
+      localStorage.removeItem('pendingOrder');
+    }, 5000);
+  </script>
+</body>
+</html>
