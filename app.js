@@ -1,23 +1,31 @@
-document.addEventListener("DOMContentLoaded", () => {
+// ========================================
+// MINI MERCADO - APP.JS
+// Todas las funcionalidades del sitio
+// ========================================
 
+document.addEventListener("DOMContentLoaded", () => {
+  /* LISTA DE PALABRAS PROHIBIDAS - MODERACIÓN */
   const bannedWords = [
     'estafa', 'replica', 'falso', 'robado', 'ilegal',
     'droga', 'arma', 'hackear', 'clonar', 'piratea'
   ];
 
+  /* VALIDACIÓN DE PRODUCTO - MODERACIÓN AUTOMÁTICA */
   function validateProduct(product) {
-
+    // Rechazar precios irreales
     if (product.price < 1000 || product.price > 50000000) {
       return { valid: false, reason: "Precio fuera de rango permitido (1.000 - 50.000.000 COP)" };
     }
-
+    
+    // Buscar palabras prohibidas
     const text = `${product.name} ${product.description}`.toLowerCase();
     for (let word of bannedWords) {
       if (text.includes(word)) {
         return { valid: false, reason: `Contenido prohibido detectado: "${word}"` };
       }
     }
-
+    
+    // Productos tecnológicos muy baratos = sospechosos
     if (product.category === "Tecnología" && product.price < 50000) {
       return { valid: false, reason: "Precio sospechosamente bajo para productos tecnológicos" };
     }
@@ -25,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return { valid: true };
   }
 
+  /* PRODUCTOS INICIALES */
   const defaultProducts = [
     {
       name: "Celular Samsung Galaxy",
@@ -114,11 +123,13 @@ document.addEventListener("DOMContentLoaded", () => {
   let products = JSON.parse(localStorage.getItem("products"));
   let currentCategory = "Todos";
 
+  /* RENDER - Solo mostrar productos aprobados */
   function renderProducts(list) {
     const c = document.getElementById("catalogo");
     if (!c) return;
     c.innerHTML = "";
-
+    
+    // Filtrar solo productos aprobados
     const approvedProducts = list.filter(p => p.status === "aprobado");
     
     approvedProducts.forEach(p => {
@@ -146,6 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   renderProducts(products);
 
+  /* BÚSQUEDA MEJORADA */
   window.searchProducts = function () {
     const t = document.getElementById("search").value.toLowerCase();
     const filtered = products.filter(p =>
@@ -155,6 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderProducts(filtered);
   };
 
+  /* SISTEMA DE REPORTES */
   window.reportProduct = function(product) {
     const reason = prompt("¿Por qué reportas este producto?\n\n1. Precio sospechoso\n2. Descripción engañosa\n3. Producto prohibido\n4. Estafa\n5. Otro\n\nEscribe el número:");
     
@@ -167,21 +180,24 @@ document.addEventListener("DOMContentLoaded", () => {
       '4': 'Posible estafa',
       '5': 'Otro'
     };
-
+    
+    // Incrementar contador de reportes
     const productIndex = products.findIndex(p => 
       p.name === product.name && p.seller === product.seller
     );
     
     if (productIndex !== -1) {
       products[productIndex].reports = (products[productIndex].reports || 0) + 1;
-
+      
+      // Si tiene 3 o más reportes, marcar para revisión
       if (products[productIndex].reports >= 3) {
         products[productIndex].status = "revision";
         alert("⚠️ Este producto ha sido marcado para revisión por múltiples reportes.");
       } else {
         alert("✅ Reporte enviado. Gracias por ayudar a mantener Merka seguro.");
       }
-
+      
+      // Si tiene 5 o más reportes, ocultar automáticamente
       if (products[productIndex].reports >= 5) {
         products[productIndex].status = "bloqueado";
         alert("🛑 Este producto ha sido bloqueado automáticamente.");
@@ -192,14 +208,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  /* FILTRAR POR CATEGORÍA */
   window.filterByCategory = function(category) {
     currentCategory = category;
- 
+    
+    // Actualizar botones activos
     document.querySelectorAll('.category-btn').forEach(btn => {
       btn.classList.remove('active');
     });
     event.target.closest('.category-btn')?.classList.add('active');
-  
+    
+    // Filtrar productos
     const searchTerm = document.getElementById("search").value.toLowerCase();
     const filtered = products.filter(p => {
       const matchesCategory = category === "Todos" || p.category === category;
@@ -210,10 +229,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     
     renderProducts(filtered);
-
+    
+    // Scroll al catálogo
     document.getElementById("catalogo").scrollIntoView({ behavior: 'smooth' });
   };
 
+  /* WOMPI CONFIGURATION */
+  const WOMPI_PUBLIC_KEY = 'pub_test_G6jNb2RNW3ficsBVl36extOr2y7NZVhh'; // Llave de prueba
+  // Cuando tengas tu cuenta real, cámbiala por: pub_prod_TU_LLAVE_AQUI
+  
+  const SHIPPING_COST = 12000; // $12.000 COP envío estándar
+
+  /* CARRITO */
   function updateCartCount() {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
     document.getElementById("cartCount").textContent = cart.length;
@@ -246,19 +273,22 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderCart() {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
     const cartItems = document.getElementById("cartItems");
+    const cartSubtotal = document.getElementById("cartSubtotal");
+    const cartShipping = document.getElementById("cartShipping");
     const cartTotal = document.getElementById("cartTotal");
     
     if (cart.length === 0) {
-      cartItems.innerHTML = "<p style='text-align: center; padding: 20px;'>Tu carrito está vacío</p>";
-      cartTotal.textContent = "0";
+      cartItems.innerHTML = "<p style='text-align: center; padding: 20px; color: #6b7280;'>Tu carrito está vacío</p>";
+      if (cartSubtotal) cartSubtotal.textContent = "0";
+      if (cartTotal) cartTotal.textContent = "0";
       return;
     }
     
-    let total = 0;
+    let subtotal = 0;
     cartItems.innerHTML = "";
     
     cart.forEach((item, index) => {
-      total += item.price;
+      subtotal += item.price;
       const formattedPrice = new Intl.NumberFormat('es-CO', {
         style: 'currency',
         currency: 'COP',
@@ -271,17 +301,28 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="cart-item-info">
             <h4>${item.name}</h4>
             <p class="precio">${formattedPrice}</p>
+            <p class="seller-info-small">Vendedor: ${item.seller}</p>
           </div>
           <button class="remove-btn" onclick="removeFromCart(${index})">✕</button>
         </div>
       `;
     });
     
+    const total = subtotal + SHIPPING_COST;
+    
+    const formattedSubtotal = new Intl.NumberFormat('es-CO', {
+      minimumFractionDigits: 0
+    }).format(subtotal);
+    
     const formattedTotal = new Intl.NumberFormat('es-CO', {
       minimumFractionDigits: 0
     }).format(total);
     
-    cartTotal.textContent = formattedTotal;
+    if (cartSubtotal) cartSubtotal.textContent = formattedSubtotal;
+    if (cartShipping) cartShipping.textContent = new Intl.NumberFormat('es-CO', {
+      minimumFractionDigits: 0
+    }).format(SHIPPING_COST);
+    if (cartTotal) cartTotal.textContent = formattedTotal;
   }
 
   window.checkout = function() {
@@ -296,6 +337,202 @@ document.addEventListener("DOMContentLoaded", () => {
     closeModal();
   };
 
+  /* CHECKOUT CON WOMPI */
+  window.proceedToCheckout = function() {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    
+    if (cart.length === 0) {
+      alert("❌ Tu carrito está vacío");
+      return;
+    }
+
+    const user = firebase.auth().currentUser;
+    if (!user) {
+      alert("❌ Debes iniciar sesión para realizar la compra");
+      openLogin();
+      return;
+    }
+
+    // Cerrar carrito y abrir checkout
+    document.getElementById("cartModal").style.display = "none";
+    document.getElementById("checkoutModal").style.display = "block";
+    
+    // Renderizar resumen
+    renderCheckoutSummary();
+  };
+
+  function renderCheckoutSummary() {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const summary = document.getElementById("checkoutSummary");
+    const checkoutTotal = document.getElementById("checkoutTotal");
+    
+    let subtotal = 0;
+    let html = '';
+    
+    cart.forEach(item => {
+      subtotal += item.price;
+      const formatted = new Intl.NumberFormat('es-CO', {
+        minimumFractionDigits: 0
+      }).format(item.price);
+      
+      html += `
+        <div class="summary-item">
+          <span>${item.name}</span>
+          <span>${formatted}</span>
+        </div>
+      `;
+    });
+    
+    const shippingFormatted = new Intl.NumberFormat('es-CO', {
+      minimumFractionDigits: 0
+    }).format(SHIPPING_COST);
+    
+    const total = subtotal + SHIPPING_COST;
+    const totalFormatted = new Intl.NumberFormat('es-CO', {
+      minimumFractionDigits: 0
+    }).format(total);
+    
+    html += `
+      <div class="summary-item">
+        <span>Subtotal:</span>
+        <span>${new Intl.NumberFormat('es-CO', { minimumFractionDigits: 0 }).format(subtotal)}</span>
+      </div>
+      <div class="summary-item">
+        <span>Envío:</span>
+        <span>${shippingFormatted}</span>
+      </div>
+      <div class="summary-item summary-total">
+        <strong>Total:</strong>
+        <strong>${totalFormatted}</strong>
+      </div>
+    `;
+    
+    summary.innerHTML = html;
+    checkoutTotal.textContent = totalFormatted;
+  }
+
+  window.payWithWompi = function() {
+    // Validar campos
+    const name = document.getElementById("buyerName").value.trim();
+    const phone = document.getElementById("buyerPhone").value.trim();
+    const address = document.getElementById("buyerAddress").value.trim();
+    const city = document.getElementById("buyerCity").value.trim();
+    const department = document.getElementById("buyerDepartment").value;
+    
+    if (!name || !phone || !address || !city || !department) {
+      alert("❌ Por favor completa todos los campos obligatorios");
+      return;
+    }
+
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+    const total = subtotal + SHIPPING_COST;
+    
+    // Generar referencia única
+    const reference = 'MERKA-' + Date.now();
+    
+    // Guardar orden localmente antes del pago
+    const orderData = {
+      reference: reference,
+      buyer: {
+        name: name,
+        phone: phone,
+        email: firebase.auth().currentUser.email,
+        address: address,
+        city: city,
+        department: department,
+        notes: document.getElementById("buyerNotes").value
+      },
+      products: cart,
+      subtotal: subtotal,
+      shippingCost: SHIPPING_COST,
+      total: total,
+      status: 'pending',
+      createdAt: Date.now()
+    };
+    
+    localStorage.setItem('pendingOrder', JSON.stringify(orderData));
+    
+    // Configurar Wompi Checkout
+    var checkout = new WidgetCheckout({
+      currency: 'COP',
+      amountInCents: total * 100, // Convertir a centavos
+      reference: reference,
+      publicKey: WOMPI_PUBLIC_KEY,
+      redirectUrl: window.location.origin + '/payment-success.html', // Página de éxito
+      taxInCents: {
+        vat: 0,
+        consumption: 0
+      },
+      customerData: {
+        email: firebase.auth().currentUser.email,
+        fullName: name,
+        phoneNumber: phone
+      }
+    });
+
+    // Abrir widget de Wompi
+    checkout.open(function (result) {
+      var transaction = result.transaction;
+      console.log('Transacción:', transaction);
+      
+      if (transaction.status === 'APPROVED') {
+        completePurchase(transaction, orderData);
+      } else if (transaction.status === 'DECLINED') {
+        alert('❌ Pago rechazado. Por favor intenta con otro método de pago.');
+      } else if (transaction.status === 'ERROR') {
+        alert('❌ Error en el pago. Por favor intenta nuevamente.');
+      }
+    });
+  };
+
+  function completePurchase(transaction, orderData) {
+    // Actualizar orden con información de transacción
+    orderData.transactionId = transaction.id;
+    orderData.status = 'paid';
+    orderData.paymentMethod = transaction.payment_method_type;
+    orderData.paidAt = Date.now();
+    
+    // Guardar en localStorage (en producción esto iría a Firestore)
+    const orders = JSON.parse(localStorage.getItem("orders")) || [];
+    orders.push(orderData);
+    localStorage.setItem("orders", JSON.stringify(orders));
+    
+    // Limpiar carrito
+    localStorage.setItem("cart", JSON.stringify([]));
+    localStorage.removeItem('pendingOrder');
+    updateCartCount();
+    
+    // Cerrar modal
+    closeModal();
+    
+    // Mostrar confirmación
+    showPaymentSuccess(orderData);
+  }
+
+  function showPaymentSuccess(order) {
+    const message = `
+✅ ¡Pago Exitoso!
+
+Número de orden: ${order.reference}
+Total pagado: ${new Intl.NumberFormat('es-CO', { minimumFractionDigits: 0 }).format(order.total)} COP
+
+📦 Tu pedido será enviado a:
+${order.buyer.address}
+${order.buyer.city}, ${order.buyer.department}
+
+📧 Recibirás un email de confirmación con los detalles del envío.
+
+El vendedor será notificado y procesará tu pedido pronto.
+    `;
+    
+    alert(message);
+    
+    // Redirigir al inicio
+    window.location.href = 'index.html';
+  }
+
+  /* VENDER CON VALIDACIÓN */
   window.addProduct = function () {
     const name = document.getElementById("name").value;
     const price = Number(document.getElementById("price").value);
@@ -315,6 +552,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // VALIDACIÓN AUTOMÁTICA - OPCIÓN B
     const newProduct = {
       name,
       price,
@@ -322,7 +560,7 @@ document.addEventListener("DOMContentLoaded", () => {
       category,
       description,
       seller: user.email,
-      status: "pendiente", 
+      status: "pendiente", // Todos los productos empiezan como pendientes
       reports: 0,
       createdAt: Date.now()
     };
@@ -334,6 +572,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // Verificar límite de productos por día para usuarios nuevos
     const userProducts = products.filter(p => p.seller === user.email);
     const today = new Date().setHours(0,0,0,0);
     const todayProducts = userProducts.filter(p => {
@@ -349,6 +588,7 @@ document.addEventListener("DOMContentLoaded", () => {
     products.push(newProduct);
     localStorage.setItem("products", JSON.stringify(products));
     
+    // Limpiar formulario
     document.getElementById("name").value = "";
     document.getElementById("price").value = "";
     document.getElementById("image").value = "";
@@ -358,6 +598,7 @@ document.addEventListener("DOMContentLoaded", () => {
     closeModal();
   };
 
+  /* AUTH */
   window.login = function () {
     firebase.auth()
       .signInWithEmailAndPassword(email.value, password.value)
@@ -388,6 +629,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
+  // Verificar estado de autenticación
   firebase.auth().onAuthStateChanged(user => {
     if (user) {
       document.getElementById("userProfile").style.display = "inline";
@@ -396,12 +638,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  /* MODALES - ARREGLADOS */
   const overlay = document.getElementById("overlay");
   const loginModal = document.getElementById("loginModal");
   const registerModal = document.getElementById("registerModal");
   const sellModal = document.getElementById("sellModal");
   const cartModal = document.getElementById("cartModal");
   const profileModal = document.getElementById("profileModal");
+  const checkoutModal = document.getElementById("checkoutModal");
 
   window.openLogin = function () {
     closeModal();
@@ -450,7 +694,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
     if (!profileModal) return;
-
+    
+    // Actualizar información del perfil
     const emailEl = document.getElementById("profileEmail");
     const memberEl = document.getElementById("memberSince");
     const publishedEl = document.getElementById("productsPublished");
@@ -462,7 +707,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const creationDate = new Date(user.metadata.creationTime);
       memberEl.textContent = creationDate.toLocaleDateString('es-CO');
     }
-
+    
+    // Contar productos del usuario
     const userProducts = products.filter(p => p.seller === user.email && p.status === "aprobado");
     if (publishedEl) publishedEl.textContent = userProducts.length;
     if (soldEl) soldEl.textContent = Math.floor(userProducts.length * 0.7); // Simulado
@@ -481,12 +727,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (sellModal) sellModal.style.display = "none";
     if (cartModal) cartModal.style.display = "none";
     if (profileModal) profileModal.style.display = "none";
+    if (checkoutModal) checkoutModal.style.display = "none";
   };
 
-
+  /* CARRUSEL */
   let currentSlide = 0;
   const slides = document.querySelectorAll('.carousel-slide');
   const totalSlides = slides.length;
+
+  // Crear indicadores
   const indicatorsContainer = document.getElementById('carouselIndicators');
   for (let i = 0; i < totalSlides; i++) {
     const indicator = document.createElement('button');
@@ -517,6 +766,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showSlide(n);
   }
 
+  // Auto-avance del carrusel
   setInterval(() => {
     nextSlide();
   }, 5000);
