@@ -166,8 +166,81 @@
   <h2>Carrito de Compras</h2>
   <div id="cartItems"></div>
   <div class="cart-total">
-    <h3>Total: $<span id="cartTotal">0</span> COP</h3>
-    <button onclick="checkout()">Proceder al Pago</button>
+    <div class="total-breakdown">
+      <div class="total-line">
+        <span>Subtotal:</span>
+        <span>$<span id="cartSubtotal">0</span> COP</span>
+      </div>
+      <div class="total-line">
+        <span>Envío:</span>
+        <span>$<span id="cartShipping">12000</span> COP</span>
+      </div>
+      <div class="total-line total-final">
+        <span><strong>Total:</strong></span>
+        <span><strong>$<span id="cartTotal">0</span> COP</strong></span>
+      </div>
+    </div>
+    <button onclick="proceedToCheckout()" class="checkout-btn">💳 Proceder al Pago con Wompi</button>
+    <p class="payment-info">Pago seguro con tarjetas, PSE, Nequi y Daviplata</p>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div id="checkoutModal" class="modal checkout-modal">
+  <h2>Finalizar Compra</h2>
+  <div class="checkout-form">
+    <h3>Información de Envío</h3>
+    <input type="text" id="buyerName" placeholder="Nombre completo *" required>
+    <input type="tel" id="buyerPhone" placeholder="Teléfono *" required>
+    <input type="text" id="buyerAddress" placeholder="Dirección completa *" required>
+    <input type="text" id="buyerCity" placeholder="Ciudad *" required>
+    <select id="buyerDepartment">
+      <option value="">Seleccionar departamento *</option>
+      <option value="Amazonas">Amazonas</option>
+      <option value="Antioquia">Antioquia</option>
+      <option value="Arauca">Arauca</option>
+      <option value="Atlántico">Atlántico</option>
+      <option value="Bolívar">Bolívar</option>
+      <option value="Boyacá">Boyacá</option>
+      <option value="Caldas">Caldas</option>
+      <option value="Caquetá">Caquetá</option>
+      <option value="Casanare">Casanare</option>
+      <option value="Cauca">Cauca</option>
+      <option value="Cesar">Cesar</option>
+      <option value="Chocó">Chocó</option>
+      <option value="Córdoba">Córdoba</option>
+      <option value="Cundinamarca">Cundinamarca</option>
+      <option value="Guainía">Guainía</option>
+      <option value="Guaviare">Guaviare</option>
+      <option value="Huila">Huila</option>
+      <option value="La Guajira">La Guajira</option>
+      <option value="Magdalena">Magdalena</option>
+      <option value="Meta">Meta</option>
+      <option value="Nariño">Nariño</option>
+      <option value="Norte de Santander">Norte de Santander</option>
+      <option value="Putumayo">Putumayo</option>
+      <option value="Quindío">Quindío</option>
+      <option value="Risaralda">Risaralda</option>
+      <option value="San Andrés y Providencia">San Andrés y Providencia</option>
+      <option value="Santander">Santander</option>
+      <option value="Sucre">Sucre</option>
+      <option value="Tolima">Tolima</option>
+      <option value="Valle del Cauca">Valle del Cauca</option>
+      <option value="Vaupés">Vaupés</option>
+      <option value="Vichada">Vichada</option>
+    </select>
+    <textarea id="buyerNotes" placeholder="Notas adicionales (opcional)" rows="3"></textarea>
+    
+    <div class="order-summary">
+      <h3>Resumen del Pedido</h3>
+      <div id="checkoutSummary"></div>
+    </div>
+    
+    <button onclick="payWithWompi()" class="wompi-pay-btn">
+      <img src="https://wompi.com/assets/images/logo-purple.svg" alt="Wompi" style="height: 20px; margin-right: 10px;">
+      Pagar $<span id="checkoutTotal">0</span> COP
+    </button>
+    <button onclick="closeModal()" class="cancel-btn">Cancelar</button>
   </div>
 </div>
 
@@ -201,6 +274,8 @@
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<!-- WOMPI SDK -->
+<script src="https://checkout.wompi.co/widget.js"></script>
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyBGkUJ04p3fOGyXZUnShgfCVAkbVFw61AI",
@@ -215,3 +290,4 @@ firebase.initializeApp(firebaseConfig);
 <script src="app.js"></script>
 </body>
 </html>
+
